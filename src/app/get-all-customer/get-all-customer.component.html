@@ -1,0 +1,31 @@
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Customer List</h2>
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>PAN</th>
+        <th>Aadhar</th>
+        <th>Account Type</th>
+        <th>Balance</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let customer of customers">
+        <td>{{ customer.id }}</td>
+        <td>{{ customer.customerName }}</td>
+        <td>{{ customer.mobileNumber }}</td>
+        <td>{{ customer.panCard }}</td>
+        <td>{{ customer.adharcard }}</td>
+        <td>{{ customer.account?.accType }}</td>
+        <td>{{ customer.account?.balance }}</td>
+        <td>
+          {{customer.deleteCustomer}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

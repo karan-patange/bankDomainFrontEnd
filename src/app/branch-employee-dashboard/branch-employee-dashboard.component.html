@@ -1,0 +1,90 @@
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3>Branch Employee Dashboard</h3>
+          </div>
+          <div class="card-body">
+            <!-- Buttons to switch views -->
+            <div class="mb-4">
+              <button class="btn btn-primary me-2" (click)="loadPendingRequests()">Pending Requests</button>
+              <button class="btn btn-success me-2" (click)="loadApprovedRequests()">Approved Requests</button>
+              <button class="btn btn-danger" (click)="loadRejectedRequests()">Rejected Requests</button>
+            </div>
+  
+            <!-- Message -->
+            <div class="alert alert-success" *ngIf="message && !message.includes('Error')">
+              {{ message }}
+            </div>
+            <div class="alert alert-danger" *ngIf="message && message.includes('Error')">
+              {{ message }}
+            </div>
+  
+            <!-- Requests Table -->
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>PAN NUMBER</th>
+                  <th>ADHAR number</th>
+                  <th>Mobile Number</th>
+                  <th>Email</th>
+                  <th>Account Type</th>
+                  <th>State</th>
+                  <th>City</th>
+                  <th *ngIf="currentView === 'pending'">Actions</th>
+                  <th *ngIf="currentView === 'rejected'">Remark</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let request of requests">
+                  <td>{{ request.id }}</td>
+                  <td>{{ request.name }}</td>
+                  <td>{{ request.panNumber }}</td>
+                  <td>{{ request.aadharNumber }}</td>
+                  <td>{{ request.mobileNumber }}</td>
+                  <td>{{ request.emailId }}</td>
+                  <td>{{ request.accountType }}</td>
+                  <td>{{ request.city }}</td>
+                  <td>{{ request.state }}</td>
+
+                  <td *ngIf="currentView === 'pending'">
+                    <button class="btn btn-success btn-sm me-2" (click)="approveRequest(request.id)">Approve</button>
+                    <button class="btn btn-danger btn-sm" (click)="showRemarkModal(request)" data-bs-toggle="modal" data-bs-target="#remarkModal">Reject</button>
+                  </td>
+                  <td *ngIf="currentView === 'rejected'">{{ request.remark }}</td>
+                </tr>
+                <tr *ngIf="requests.length === 0">
+                  <td colspan="7" class="text-center">No {{ currentView }} requests found.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Remark Modal -->
+  <div class="modal fade" id="remarkModal" tabindex="-1" aria-labelledby="remarkModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="remarkModalLabel">Reject Request</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="remark">Remark (Reason for Rejection)</label>
+            <textarea class="form-control" id="remark" [(ngModel)]="remark" rows="3" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" (click)="rejectRequest()" data-bs-dismiss="modal">Reject</button>
+        </div>
+      </div>
+    </div>
+  </div>

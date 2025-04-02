@@ -1,0 +1,49 @@
+<div class="container">
+    <h2>Manager Dashboard</h2>
+  
+    <!-- Buttons to load different requests -->
+    <button (click)="loadRequests('pending')">Pending Requests</button>
+    <button (click)="loadRequests('approved')">Approved Requests</button>
+    <button (click)="loadRequests('rejected')">Rejected Requests</button>
+  
+    <!-- Requests Table -->
+    <table *ngIf="requests.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Mobile</th>
+          <th>Status</th>
+          <th *ngIf="currentView === 'pending'">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of requests">
+          <td>{{ request.id }}</td>
+          <td>{{ request.name }}</td>
+          <td>{{ request.mobileNumber }}</td>
+          <td>{{ currentView }}</td>
+          <td *ngIf="currentView === 'pending'">
+            <button (click)="approveRequest(request.id)">Approve</button>
+            <button (click)="openRejectPopup(request.id)">Reject</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!-- No requests message -->
+    <p *ngIf="requests.length === 0">No {{ currentView }} requests found.</p>
+  
+    <!-- Reject Request Popup -->
+    <div class="popup" *ngIf="showRejectPopup">
+      <div class="popup-content">
+        <h3>Reject Request</h3>
+        <p>Enter the reason for rejection:</p>
+        <textarea [(ngModel)]="rejectionReason"></textarea>
+        <br>
+        <button (click)="rejectRequest()">Submit</button>
+        <button (click)="closeRejectPopup()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
