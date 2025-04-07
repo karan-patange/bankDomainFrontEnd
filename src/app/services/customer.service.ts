@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -52,36 +53,29 @@ export class CustomerService {
   // FOR BRANCH DASHBOARD
 
 
+  private baseUrl = 'http://localhost:9292/api/bank/branch';
 
-  private baseUrlForBranch = 'http://localhost:9292/api/bank';
+
 
   getPendingRequests(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrlForBranch}/branch/pending`);
+    return this.http.get<any[]>(`${this.baseUrl}/pending`);
   }
 
-  // Get all approved requests
   getApprovedRequests(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrlForBranch}/branch/approved`);
+    return this.http.get<any[]>(`${this.baseUrl}/approved`);
   }
 
-  // Get all rejected requests
   getRejectedRequests(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrlForBranch}/branch/rejected`);
+    return this.http.get<any[]>(`${this.baseUrl}/rejected`);
   }
 
   approveRequest(id: number): Observable<string> {
-    return this.http.put<string>(`${this.baseUrlForBranch}/branch/approve/${id}`, {});
+    return this.http.put(`${this.baseUrl}/approve/${id}`, {}, { responseType: 'text' });
   }
 
-  // Reject a request
   rejectRequest(id: number, remark: string): Observable<string> {
-    const body = { remark };
-    return this.http.put<string>(`${this.baseUrlForBranch}/branch/reject/${id}`, body);
+    return this.http.put(`${this.baseUrl}/reject/${id}`, { remark }, { responseType: 'text' });
   }
-
-
-
-
 
 
 
@@ -113,6 +107,29 @@ rejectRequestForManager(id: number, remark: string): Observable<string> {
   const body = { remark };
   return this.http.put<string>(`${this.baseUrlForManager}/manager/reject/${id}`, body);
 }
+
+
+
+
+
+
+// registerCustomerWd(formData: FormData): Observable<any> {
+//   return this.http.post(`${this.apiUrl}/docDoc`, formData);
+// }
+
+
+registerCustomerWd(formData: FormData): Observable<any> {
+  return this.http.post(`${this.apiUrl}/newCustomerRequest`, formData, {
+    reportProgress: true,
+    observe: 'response'
+  });
+}
+
+
+getRequestDocuments(id: number): Observable<any> {
+  return this.http.get(`${this.apiUrl}/branch/request/${id}/documents`, { responseType: 'json' });
+}
+
 
 
 }

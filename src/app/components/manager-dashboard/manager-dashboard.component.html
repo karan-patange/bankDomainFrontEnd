@@ -1,0 +1,100 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Branch Dashboard</h2>
+
+  <!-- Buttons to load different requests -->
+  <div class="d-flex justify-content-center gap-2 mb-4">
+    <button class="btn btn-outline-primary" (click)="loadRequests('pending')">Pending Requests</button>
+    <button class="btn btn-outline-success" (click)="loadRequests('approved')">Approved Requests</button>
+    <button class="btn btn-outline-danger" (click)="loadRequests('rejected')">Rejected Requests</button>
+  </div>
+
+  <!-- Requests Table -->
+  <div *ngIf="requests.length > 0" class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Mobile</th>
+          <th>Status</th>
+          <th *ngIf="currentView === 'pending'">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of requests">
+          <td>{{ request.id }}</td>
+          <td>{{ request.name }}</td>
+          <td>{{ request.mobileNumber }}</td>
+          <td>{{ currentView }}</td>
+          <td *ngIf="currentView === 'pending'">
+            <div class="btn-group" role="group">
+              <button class="btn btn-sm btn-success" (click)="approveRequest(request.id)">Approve</button>
+              <button class="btn btn-sm btn-danger" (click)="openRejectPopup(request.id)">Reject</button>
+              <button class="btn btn-sm btn-info" (click)="viewDocuments(request.id)">View Docs</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- No requests message -->
+  <div *ngIf="requests.length === 0" class="alert alert-warning text-center">
+    No {{ currentView }} requests found.
+  </div>
+
+  <!-- Reject Request Modal -->
+  <div class="modal show d-block" tabindex="-1" *ngIf="showRejectPopup" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Reject Request</h5>
+          <button type="button" class="btn-close" (click)="closeRejectPopup()"></button>
+        </div>
+        <div class="modal-body">
+          <p>Enter the reason for rejection:</p>
+          <textarea class="form-control" [(ngModel)]="rejectionReason" rows="3"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-danger" (click)="rejectRequest()">Submit</button>
+          <button class="btn btn-secondary" (click)="closeRejectPopup()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documents Popup -->
+  <div class="modal show d-block" tabindex="-1" *ngIf="showDocsPopup" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Uploaded Documents</h5>
+          <button type="button" class="btn-close" (click)="closeDocsPopup()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="documents" class="row g-3">
+            <div class="col-md-6" *ngIf="documents['customerPhoto']">
+              <p><strong>Customer Photo:</strong></p>
+              <img [src]="documents['customerPhoto']" alt="Customer Photo" class="img-fluid rounded border" />
+            </div>
+            <div class="col-md-6" *ngIf="documents['signaturePhoto']">
+              <p><strong>Signature Photo:</strong></p>
+              <img [src]="documents['signaturePhoto']" alt="Signature Photo" class="img-fluid rounded border" />
+            </div>
+            <div class="col-md-6" *ngIf="documents['aadharCard']">
+              <p><strong>Aadhar Card:</strong></p>
+              <embed [src]="documents['aadharCard']" type="application/pdf" width="100%" height="300" class="border rounded" />
+            </div>
+            <div class="col-md-6" *ngIf="documents['panCard']">
+              <p><strong>Pan Card:</strong></p>
+              <embed [src]="documents['panCard']" type="application/pdf" width="100%" height="300" class="border rounded" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeDocsPopup()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
